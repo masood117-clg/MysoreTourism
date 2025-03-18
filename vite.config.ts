@@ -22,7 +22,6 @@ export default defineConfig({
         ]
       : []),
   ],
-  base:"/MysoreTourism",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "client", "src"),
