@@ -9,6 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig({
+  base: "/MysoreTourism",
   plugins: [
     react(),
     runtimeErrorOverlay(),
@@ -22,7 +23,6 @@ export default defineConfig({
       ]
       : []),
   ],
-  base: "/MysoreTourism",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "client", "src"),
