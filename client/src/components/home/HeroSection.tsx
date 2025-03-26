@@ -4,38 +4,38 @@ import { Attraction } from "@/lib/types";
 
 const HeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  
+
   const { data: attractions = [] } = useQuery<Attraction[]>({
     queryKey: ['/api/attractions/featured'],
     refetchOnWindowFocus: false,
   });
-  
+
   const heroImages = attractions.map(attraction => ({
     id: attraction.id,
     title: attraction.name,
     description: attraction.shortDescription,
     imageSrc: attraction.imageSrc
   }));
-  
+
   // Auto advance slides
   useEffect(() => {
     if (heroImages.length === 0) return;
-    
+
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroImages.length);
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, [heroImages.length]);
-  
+
   const goToPrevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length);
   };
-  
+
   const goToNextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % heroImages.length);
   };
-  
+
   if (heroImages.length === 0) {
     return (
       <section id="home" className="relative h-screen bg-gray-200 flex items-center justify-center">
@@ -46,16 +46,15 @@ const HeroSection = () => {
       </section>
     );
   }
-  
+
   return (
     <section id="home" className="relative h-screen">
       <div className="carousel relative w-full h-full overflow-hidden">
         {heroImages.map((image, index) => (
           <div
             key={image.id}
-            className={`carousel-item absolute w-full h-full transition-opacity duration-1000 ${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
+            className={`carousel-item absolute w-full h-full transition-opacity duration-1000 ${index === currentSlide ? "opacity-100" : "opacity-0"
+              }`}
           >
             <div className="relative w-full h-full">
               <img
@@ -77,20 +76,19 @@ const HeroSection = () => {
           </div>
         ))}
       </div>
-      
+
       {/* Carousel Controls */}
       <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-2 z-10">
         {heroImages.map((_, index) => (
           <button
             key={index}
-            className={`w-3 h-3 rounded-full bg-white ${
-              index === currentSlide ? "opacity-100" : "opacity-50"
-            } focus:outline-none`}
+            className={`w-3 h-3 rounded-full bg-white ${index === currentSlide ? "opacity-100" : "opacity-50"
+              } focus:outline-none`}
             onClick={() => setCurrentSlide(index)}
           ></button>
         ))}
       </div>
-      
+
       <button
         className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-3 rounded-full focus:outline-none"
         onClick={goToPrevSlide}
