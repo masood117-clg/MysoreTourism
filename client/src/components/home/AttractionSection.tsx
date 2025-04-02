@@ -122,13 +122,13 @@ const AttractionSection = () => {
           </div>
         )}
 
-        <div className="text-center mt-10">
+        {/* <div className="text-center mt-10">
           <Link href="/attractions">
             <a className="inline-block px-8 py-3 bg-royal-gold hover:bg-yellow-600 text-white rounded-full font-medium transition-colors duration-300">
               View All Attractions <i className="fas fa-arrow-right ml-2"></i>
             </a>
           </Link>
-        </div>
+        </div> */}
       </div>
     </section>
   );
