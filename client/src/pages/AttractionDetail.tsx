@@ -34,7 +34,7 @@ const AttractionDetail = () => {
       return data;
     },
   });
-  console.log(attraction.location);
+
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
