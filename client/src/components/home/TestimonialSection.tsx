@@ -1,43 +1,56 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Testimonial } from "@/lib/types";
+import { supabase } from "@/supabase";
 
 const TestimonialSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
-  
+
+  // const { data: testimonials = [], isLoading } = useQuery<Testimonial[]>({
+  //   queryKey: ['/api/testimonials'],
+  //   refetchOnWindowFocus: false,
+  // });
   const { data: testimonials = [], isLoading } = useQuery<Testimonial[]>({
-    queryKey: ['/api/testimonials'],
+    queryKey: ['testimonials'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("testimonials")
+        .select("*"); // Fetch all attractions
+
+      if (error) throw new Error(error.message);
+      return data;
+    },
     refetchOnWindowFocus: false,
   });
-  
+
   useEffect(() => {
     if (testimonials.length === 0) return;
-    
+
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % testimonials.length);
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, [testimonials.length]);
-  
+
   useEffect(() => {
     if (!carouselRef.current) return;
-    
+
     const scrollToSlide = (index: number) => {
       const element = carouselRef.current;
       if (!element) return;
-      
+
       const slideWidth = element.querySelector('.carousel-item')?.clientWidth || 0;
       element.scrollTo({
         left: slideWidth * index,
         behavior: 'smooth'
       });
     };
-    
+
     scrollToSlide(currentSlide);
   }, [currentSlide]);
-  
+
   if (isLoading) {
     return (
       <section className="py-12 md:py-16 bg-white">
@@ -48,11 +61,11 @@ const TestimonialSection = () => {
       </section>
     );
   }
-  
+
   if (testimonials.length === 0) {
     return null;
   }
-  
+
   return (
     <section className="py-12 md:py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -63,16 +76,16 @@ const TestimonialSection = () => {
             Read what travelers have to say about their visits to the royal city of Mysore.
           </p>
         </div>
-        
+
         <div className="relative">
-          <div 
+          <div
             ref={carouselRef}
             className="carousel flex overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide"
             style={{ scrollSnapType: 'x mandatory', scrollBehavior: 'smooth' }}
           >
             {testimonials.map((testimonial) => (
-              <div 
-                key={testimonial.id} 
+              <div
+                key={testimonial.id}
                 className="carousel-item flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-4"
                 style={{ scrollSnapAlign: 'start' }}
               >
@@ -84,9 +97,9 @@ const TestimonialSection = () => {
                     "{testimonial.comment}"
                   </p>
                   <div className="flex items-center">
-                    <img 
-                      src={testimonial.imageSrc} 
-                      alt={testimonial.name} 
+                    <img
+                      src={testimonial.imageSrc}
+                      alt={testimonial.name}
                       className="w-12 h-12 rounded-full mr-4"
                     />
                     <div>
@@ -98,14 +111,13 @@ const TestimonialSection = () => {
               </div>
             ))}
           </div>
-          
+
           <div className="absolute left-0 right-0 bottom-0 flex justify-center space-x-2">
             {testimonials.map((_, index) => (
               <button
                 key={index}
-                className={`w-3 h-3 rounded-full bg-royal-gold ${
-                  index === currentSlide ? "opacity-100" : "opacity-50"
-                } focus:outline-none`}
+                className={`w-3 h-3 rounded-full bg-royal-gold ${index === currentSlide ? "opacity-100" : "opacity-50"
+                  } focus:outline-none`}
                 onClick={() => setCurrentSlide(index)}
               ></button>
             ))}
@@ -120,7 +132,7 @@ const TestimonialSection = () => {
 const renderStars = (ratingText: string) => {
   const ratingValue = parseFloat(ratingText.split('/')[0]);
   const stars = [];
-  
+
   for (let i = 1; i <= 5; i++) {
     if (i <= Math.floor(ratingValue)) {
       stars.push(<i key={i} className="fas fa-star"></i>);
@@ -130,7 +142,7 @@ const renderStars = (ratingText: string) => {
       stars.push(<i key={i} className="far fa-star"></i>);
     }
   }
-  
+
   return stars;
 };
 

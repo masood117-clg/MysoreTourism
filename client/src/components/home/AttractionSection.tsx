@@ -2,15 +2,30 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Attraction } from "@/lib/types";
+import { supabase } from "@/supabase";
 
 const AttractionSection = () => {
   const [activeCategory, setActiveCategory] = useState("all");
-  
-  const { data: attractions = [], isLoading } = useQuery<Attraction[]>({
-    queryKey: ['/api/attractions'],
+
+  // const { data: attractions = [], isLoading } = useQuery<Attraction[]>({
+  //   queryKey: ['/api/attractions'],
+  //   refetchOnWindowFocus: false,
+  // });
+
+  const { data: attractions = [], isLoading, error } = useQuery<Attraction[]>({
+    queryKey: ["attractions"], // More semantic key
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("attractions")
+        .select("*"); // Fetch all attractions
+
+      if (error) throw new Error(error.message);
+      return data;
+    },
     refetchOnWindowFocus: false,
   });
-  
+
+
   const categories = [
     { id: "all", label: "All" },
     { id: "palaces", label: "Palaces" },
@@ -19,11 +34,11 @@ const AttractionSection = () => {
     { id: "religious-sites", label: "Religious Sites" },
     { id: "wildlife", label: "Wildlife" }
   ];
-  
-  const filteredAttractions = activeCategory === "all" 
-    ? attractions 
+
+  const filteredAttractions = activeCategory === "all"
+    ? attractions
     : attractions.filter(attraction => attraction.category.includes(activeCategory));
-  
+
   return (
     <section id="attractions" className="py-12 md:py-16 bg-royal-cream">
       <div className="container mx-auto px-4">
@@ -34,24 +49,23 @@ const AttractionSection = () => {
             Discover Mysore's iconic landmarks, from majestic palaces to tranquil gardens and cultural treasures.
           </p>
         </div>
-        
+
         {/* Categories Filter */}
         <div className="flex flex-wrap justify-center gap-3 mb-10">
           {categories.map(category => (
             <button
               key={category.id}
-              className={`px-4 py-2 rounded-full ${
-                activeCategory === category.id
-                  ? "bg-royal-purple text-white"
-                  : "border border-royal-purple text-royal-purple hover:bg-royal-purple hover:text-white"
-              } transition-colors duration-300`}
+              className={`px-4 py-2 rounded-full ${activeCategory === category.id
+                ? "bg-royal-purple text-white"
+                : "border border-royal-purple text-royal-purple hover:bg-royal-purple hover:text-white"
+                } transition-colors duration-300`}
               onClick={() => setActiveCategory(category.id)}
             >
               {category.label}
             </button>
           ))}
         </div>
-        
+
         {/* Attractions Grid */}
         {isLoading ? (
           <div className="text-center py-12">
@@ -61,15 +75,15 @@ const AttractionSection = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredAttractions.map(attraction => (
-              <div 
-                key={attraction.id} 
+              <div
+                key={attraction.id}
                 className="bg-white rounded-lg overflow-hidden shadow-md card-hover transition-all duration-300"
                 data-category={attraction.category}
               >
                 <div className="relative h-64">
-                  <img 
+                  <img
                     src={attraction.imageSrc}
-                    alt={attraction.name} 
+                    alt={attraction.name}
                     className="w-full h-full object-cover"
                   />
                   {attraction.isFeatured && (
@@ -107,7 +121,7 @@ const AttractionSection = () => {
             ))}
           </div>
         )}
-        
+
         <div className="text-center mt-10">
           <Link href="/attractions">
             <a className="inline-block px-8 py-3 bg-royal-gold hover:bg-yellow-600 text-white rounded-full font-medium transition-colors duration-300">
@@ -124,7 +138,7 @@ const AttractionSection = () => {
 const renderStars = (ratingText: string) => {
   const ratingValue = parseFloat(ratingText.split('/')[0]);
   const stars = [];
-  
+
   for (let i = 1; i <= 5; i++) {
     if (i <= Math.floor(ratingValue)) {
       stars.push(<i key={i} className="fas fa-star"></i>);
@@ -134,7 +148,7 @@ const renderStars = (ratingText: string) => {
       stars.push(<i key={i} className="far fa-star"></i>);
     }
   }
-  
+
   return stars;
 };
 

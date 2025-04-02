@@ -4,17 +4,37 @@ import { useQuery } from "@tanstack/react-query";
 import { Attraction } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Clock, Ticket, Calendar, ArrowLeft } from "lucide-react";
+import { supabase } from "@/supabase";
 
 const AttractionDetail = () => {
   const [, params] = useRoute("/attractions/:id");
   const attractionId = params?.id ? parseInt(params.id) : null;
 
-  const { data: attraction, isLoading, error } = useQuery<Attraction>({
-    queryKey: [`/api/attractions/${attractionId}`],
-    enabled: !!attractionId,
-    refetchOnWindowFocus: false,
-  });
+  // const { data: attraction, isLoading, error } = useQuery<Attraction>({
+  //   queryKey: [`/api/attractions/${attractionId}`],
+  //   enabled: !!attractionId,
+  //   refetchOnWindowFocus: false,
+  // });
 
+
+  const { data: attraction, isLoading, error } = useQuery<Attraction>({
+    queryKey: ["attraction", attractionId], // More semantic query key
+    enabled: !!attractionId, // Ensures the query runs only when attractionId exists
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      if (!attractionId) return null;
+
+      const { data, error } = await supabase
+        .from("attractions")
+        .select("*")
+        .eq("id", attractionId)
+        .single(); // Fetch one attraction
+
+      if (error) throw new Error(error.message);
+      return data;
+    },
+  });
+  console.log(attraction.location);
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);

@@ -2,15 +2,29 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Accommodation } from "@/lib/types";
+import { supabase } from "@/supabase";
 
 const AccommodationSection = () => {
   const [activeCategory, setActiveCategory] = useState("all");
-  
+
+  // const { data: accommodations = [], isLoading } = useQuery<Accommodation[]>({
+  //   queryKey: ['/api/accommodations'],
+  //   refetchOnWindowFocus: false,
+  // });
+
   const { data: accommodations = [], isLoading } = useQuery<Accommodation[]>({
-    queryKey: ['/api/accommodations'],
+    queryKey: ['accommodations'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("accommodations")
+        .select("*"); // Fetch all attractions
+
+      if (error) throw new Error(error.message);
+      return data;
+    },
     refetchOnWindowFocus: false,
   });
-  
+
   const categories = [
     { id: "all", label: "All" },
     { id: "luxury", label: "Luxury" },
@@ -18,11 +32,11 @@ const AccommodationSection = () => {
     { id: "budget", label: "Budget" },
     { id: "heritage", label: "Heritage" }
   ];
-  
+
   const filteredAccommodations = activeCategory === "all"
     ? accommodations
     : accommodations.filter(accommodation => accommodation.category.includes(activeCategory));
-  
+
   return (
     <section id="accommodation" className="py-12 md:py-16 bg-royal-cream">
       <div className="container mx-auto px-4">
@@ -33,24 +47,23 @@ const AccommodationSection = () => {
             From luxury heritage hotels to comfortable budget options, Mysore offers accommodations for all preferences and budgets.
           </p>
         </div>
-        
+
         {/* Accommodation Filters */}
         <div className="flex flex-wrap justify-center gap-3 mb-10">
           {categories.map(category => (
             <button
               key={category.id}
-              className={`px-4 py-2 rounded-full ${
-                activeCategory === category.id
-                  ? "bg-royal-purple text-white"
-                  : "border border-royal-purple text-royal-purple hover:bg-royal-purple hover:text-white"
-              } transition-colors duration-300`}
+              className={`px-4 py-2 rounded-full ${activeCategory === category.id
+                ? "bg-royal-purple text-white"
+                : "border border-royal-purple text-royal-purple hover:bg-royal-purple hover:text-white"
+                } transition-colors duration-300`}
               onClick={() => setActiveCategory(category.id)}
             >
               {category.label}
             </button>
           ))}
         </div>
-        
+
         {/* Accommodations List */}
         {isLoading ? (
           <div className="text-center py-12">
@@ -60,15 +73,15 @@ const AccommodationSection = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredAccommodations.map(accommodation => (
-              <div 
-                key={accommodation.id} 
+              <div
+                key={accommodation.id}
                 className="bg-white rounded-lg overflow-hidden shadow-md card-hover transition-all duration-300"
                 data-category={accommodation.category}
               >
                 <div className="relative h-48">
-                  <img 
-                    src={accommodation.imageSrc} 
-                    alt={accommodation.name} 
+                  <img
+                    src={accommodation.imageSrc}
+                    alt={accommodation.name}
                     className="w-full h-full object-cover"
                   />
                   {accommodation.category.includes("heritage") && (
@@ -100,7 +113,7 @@ const AccommodationSection = () => {
             ))}
           </div>
         )}
-        
+
         <div className="text-center mt-10">
           <a href="#" className="inline-block px-8 py-3 bg-royal-gold hover:bg-yellow-600 text-white rounded-full font-medium transition-colors duration-300">
             View All Accommodations <i className="fas fa-arrow-right ml-2"></i>
@@ -115,7 +128,7 @@ const AccommodationSection = () => {
 const renderStars = (ratingText: string) => {
   const ratingValue = parseFloat(ratingText.split('/')[0]);
   const stars = [];
-  
+
   for (let i = 1; i <= 5; i++) {
     if (i <= Math.floor(ratingValue)) {
       stars.push(<i key={i} className="fas fa-star"></i>);
@@ -125,7 +138,7 @@ const renderStars = (ratingText: string) => {
       stars.push(<i key={i} className="far fa-star"></i>);
     }
   }
-  
+
   return stars;
 };
 
