@@ -1,14 +1,38 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Attraction } from "@/lib/types";
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client
+
+const apiKey = process.env.REACT_APP_APIKey
+const supabase = createClient(
+  'https://efwpupiqcfiacharxpae.supabase.co', // Replace with your Supabase project URL
+  apiKey // Replace with your Anon Public Key
+);
 
 const HeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const { data: attractions = [] } = useQuery<Attraction[]>({
-    queryKey: ['/api/attractions/featured'],
+  // const { data: attractions = [] } = useQuery<Attraction[]>({
+  //   queryKey: ['/api/attractions/featured'],
+  //   refetchOnWindowFocus: false,
+  // });
+
+  const { data: attractions = [] } = useQuery({
+    queryKey: ['attractions'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('attractions')
+        .select('*')
+        .eq('is_featured', true);
+
+      if (error) throw new Error(error.message);
+      return data;
+    },
     refetchOnWindowFocus: false,
   });
+
 
   const heroImages = attractions.map(attraction => ({
     id: attraction.id,
