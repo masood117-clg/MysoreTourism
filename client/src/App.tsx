@@ -13,6 +13,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/attractions/:id" component={AttractionDetail} />
+      <Route path="/MysoreTourism" component={Home} />
       <Route component={NotFound} />
     </Switch>
   );
