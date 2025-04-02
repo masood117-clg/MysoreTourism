@@ -5,10 +5,10 @@ import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
 
-const apiKey = process.env.REACT_APP_APIKey
+// const apiKey = process.env.REACT_APP_APIKey
 const supabase = createClient(
   'https://efwpupiqcfiacharxpae.supabase.co', // Replace with your Supabase project URL
-  apiKey // Replace with your Anon Public Key
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmd3B1cGlxY2ZpYWNoYXJ4cGFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM1NzE2NTgsImV4cCI6MjA1OTE0NzY1OH0.cVtyA_cMDtP4MIykC5RVZnCYLMTVD4ICUA3XzNit938' // Replace with your Anon Public Key
 );
 
 const HeroSection = () => {
@@ -38,9 +38,9 @@ const HeroSection = () => {
     id: attraction.id,
     title: attraction.name,
     description: attraction.shortDescription,
-    imageSrc: attraction.imageSrc
+    imageSrc: attraction.image_src
   }));
-
+  console.log(heroImages[0]);
   // Auto advance slides
   useEffect(() => {
     if (heroImages.length === 0) return;

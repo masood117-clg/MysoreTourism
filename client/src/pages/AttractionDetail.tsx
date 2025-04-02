@@ -8,18 +8,18 @@ import { MapPin, Phone, Clock, Ticket, Calendar, ArrowLeft } from "lucide-react"
 const AttractionDetail = () => {
   const [, params] = useRoute("/attractions/:id");
   const attractionId = params?.id ? parseInt(params.id) : null;
-  
+
   const { data: attraction, isLoading, error } = useQuery<Attraction>({
     queryKey: [`/api/attractions/${attractionId}`],
     enabled: !!attractionId,
     refetchOnWindowFocus: false,
   });
-  
+
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-16 flex flex-col items-center justify-center min-h-[60vh]">
@@ -28,7 +28,7 @@ const AttractionDetail = () => {
       </div>
     );
   }
-  
+
   if (error || !attraction) {
     return (
       <div className="container mx-auto px-4 py-16 text-center min-h-[60vh]">
@@ -43,14 +43,14 @@ const AttractionDetail = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="bg-royal-cream">
       {/* Hero image */}
       <div className="relative h-[50vh] md:h-[60vh]">
-        <img 
-          src={attraction.imageSrc} 
-          alt={attraction.name} 
+        <img
+          src={attraction.imageSrc}
+          alt={attraction.name}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 hero-gradient flex flex-col items-center justify-center text-white">
@@ -67,7 +67,7 @@ const AttractionDetail = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Breadcrumb navigation */}
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-3">
@@ -84,7 +84,7 @@ const AttractionDetail = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Main content */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -95,15 +95,15 @@ const AttractionDetail = () => {
               <p className="text-gray-700 mb-6 leading-relaxed">
                 {attraction.description}
               </p>
-              
+
               {/* Additional description - since the API doesn't provide this, adding some generic content */}
               <p className="text-gray-700 mb-6 leading-relaxed">
-                {attraction.name} is one of Mysore's most celebrated attractions, drawing visitors from across the globe. 
+                {attraction.name} is one of Mysore's most celebrated attractions, drawing visitors from across the globe.
                 The architectural marvel showcases the rich cultural heritage and royal legacy of the erstwhile Mysore kingdom.
-                Visitors can explore the intricate details of the structure, learn about its historical significance, and 
+                Visitors can explore the intricate details of the structure, learn about its historical significance, and
                 immerse themselves in the regal atmosphere that pervades the entire complex.
               </p>
-              
+
               <div className="border-t border-gray-200 pt-6">
                 <h3 className="text-xl font-playfair font-semibold text-royal-purple mb-4">Highlights</h3>
                 <ul className="space-y-3">
@@ -140,7 +140,7 @@ const AttractionDetail = () => {
                 </ul>
               </div>
             </div>
-            
+
             {/* Gallery */}
             <div className="bg-white rounded-lg shadow-md p-6 md:p-8 mb-8">
               <h2 className="text-2xl font-playfair font-bold text-royal-purple mb-4">Photo Gallery</h2>
@@ -155,7 +155,7 @@ const AttractionDetail = () => {
                 </Button>
               </div>
             </div>
-            
+
             {/* Map */}
             <div className="bg-white rounded-lg shadow-md p-6 md:p-8 mb-8">
               <h2 className="text-2xl font-playfair font-bold text-royal-purple mb-4">Location</h2>
@@ -172,12 +172,12 @@ const AttractionDetail = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Right sidebar - information */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-md p-6 sticky top-24">
               <h2 className="text-xl font-playfair font-bold text-royal-purple mb-4">Visitor Information</h2>
-              
+
               <div className="space-y-4">
                 <div className="flex items-start">
                   <Clock className="h-5 w-5 text-royal-gold mt-1 mr-3" />
@@ -186,7 +186,7 @@ const AttractionDetail = () => {
                     <p className="text-gray-600">{attraction.timings}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <Ticket className="h-5 w-5 text-royal-gold mt-1 mr-3" />
                   <div>
@@ -194,7 +194,7 @@ const AttractionDetail = () => {
                     <p className="text-gray-600">{attraction.ticketPrice}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <Calendar className="h-5 w-5 text-royal-gold mt-1 mr-3" />
                   <div>
@@ -202,7 +202,7 @@ const AttractionDetail = () => {
                     <p className="text-gray-600">October to March (Winter season)</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <Phone className="h-5 w-5 text-royal-gold mt-1 mr-3" />
                   <div>
@@ -211,9 +211,9 @@ const AttractionDetail = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="border-t border-gray-200 my-6"></div>
-              
+
               <div className="bg-royal-cream rounded-lg p-4 mb-6">
                 <h3 className="font-medium text-royal-purple mb-2">Tips for Visitors</h3>
                 <ul className="text-sm text-gray-700 space-y-2">
@@ -237,7 +237,7 @@ const AttractionDetail = () => {
                   </li>
                 </ul>
               </div>
-              
+
               <div className="flex flex-col space-y-3">
                 <Button className="w-full bg-royal-gold hover:bg-yellow-600 text-white">
                   Book Guided Tour
@@ -249,7 +249,7 @@ const AttractionDetail = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Back to attractions button */}
         <div className="text-center mt-8">
           <Link href="/#attractions">
@@ -260,7 +260,7 @@ const AttractionDetail = () => {
           </Link>
         </div>
       </div>
-      
+
       {/* Initialize map with location */}
       <script type="text/javascript" dangerouslySetInnerHTML={{
         __html: `
@@ -294,7 +294,7 @@ const AttractionDetail = () => {
 const renderStars = (ratingText: string) => {
   const ratingValue = parseFloat(ratingText.split('/')[0]);
   const stars = [];
-  
+
   for (let i = 1; i <= 5; i++) {
     if (i <= Math.floor(ratingValue)) {
       stars.push(<i key={i} className="fas fa-star"></i>);
@@ -304,7 +304,7 @@ const renderStars = (ratingText: string) => {
       stars.push(<i key={i} className="far fa-star"></i>);
     }
   }
-  
+
   return stars;
 };
 
