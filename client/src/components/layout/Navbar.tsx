@@ -4,21 +4,21 @@ import { Link } from "wouter";
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  
+
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
-  
+
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
   };
-  
+
   return (
     <header className="sticky top-0 z-[100] bg-white shadow-md">
       <div className="container mx-auto px-4 py-2">
         <div className="flex flex-wrap items-center justify-between">
           {/* Logo */}
-          <Link href="/">
+          <Link href="/MysoreTourism">
             <a className="flex items-center">
               <div className="h-12 w-12 rounded-full bg-royal-purple flex items-center justify-center text-white text-xl">
                 <i className="fas fa-landmark"></i>
@@ -31,16 +31,16 @@ const Navbar = () => {
               </div>
             </a>
           </Link>
-          
+
           {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden text-royal-purple" 
+          <button
+            className="md:hidden text-royal-purple"
             aria-label="Toggle menu"
             onClick={toggleMobileMenu}
           >
             <i className="fas fa-bars text-2xl"></i>
           </button>
-          
+
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6">
             <a href="#home" className="nav-link-hover py-2 text-royal-purple hover:text-royal-gold transition-colors duration-300">Home</a>
@@ -51,10 +51,10 @@ const Navbar = () => {
             <a href="#map" className="nav-link-hover py-2 text-royal-purple hover:text-royal-gold transition-colors duration-300">Map</a>
             <a href="#contact" className="nav-link-hover py-2 text-royal-purple hover:text-royal-gold transition-colors duration-300">Contact</a>
           </nav>
-          
+
           {/* Search Icon */}
           <div className="hidden md:block">
-            <button 
+            <button
               className="bg-royal-gold hover:bg-yellow-600 text-white px-3 py-1.5 text-sm rounded-full flex items-center transition-colors duration-300"
               onClick={toggleSearch}
             >
@@ -63,7 +63,7 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-        
+
         {/* Mobile Navigation Menu */}
         <nav className={`${mobileMenuOpen ? "block" : "hidden"} md:hidden w-full mt-4 pb-2`}>
           <div className="flex flex-col space-y-3">
@@ -75,7 +75,7 @@ const Navbar = () => {
             <a href="#map" className="py-2 text-royal-purple hover:text-royal-gold transition-colors duration-300">Map</a>
             <a href="#contact" className="py-2 text-royal-purple hover:text-royal-gold transition-colors duration-300">Contact</a>
             <div className="pt-2">
-              <button 
+              <button
                 className="bg-royal-gold hover:bg-yellow-600 text-white px-3 py-1.5 text-sm rounded-full flex items-center transition-colors duration-300 w-full justify-center"
                 onClick={toggleSearch}
               >
@@ -85,17 +85,17 @@ const Navbar = () => {
             </div>
           </div>
         </nav>
-        
+
         {/* Search Panel */}
         <div className={`${searchOpen ? "block" : "hidden"} mt-4 pb-4`}>
           <form className="flex">
-            <input 
-              type="text" 
-              placeholder="Search attractions, hotels, activities..." 
+            <input
+              type="text"
+              placeholder="Search attractions, hotels, activities..."
               className="flex-grow px-4 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-royal-gold"
             />
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="bg-royal-gold hover:bg-yellow-600 text-white px-6 py-2 rounded-r-md transition-colors duration-300"
             >
               <i className="fas fa-search"></i>
